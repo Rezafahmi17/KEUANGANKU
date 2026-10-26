@@ -81,16 +81,3 @@ npm run preview
 ```
 
 ---
-
-## 🌐 Panduan Upload & Rilis (Deploy)
-
-Anda dapat meng-upload proyek ini ke berbagai platform hosting gratis maupun berbayar:
-
-1. **Vercel / Netlify**:
-   - Hubungkan repository GitHub Anda.
-   - Build Command: `npm run build`
-   - Output Directory: `dist`
-2. **GitHub Pages**:
-   - Unggah isi folder `dist/` ke branch `gh-pages` atau gunakan GitHub Actions.
-3. **Web Hosting cPanel / VPS**:
-   - Jalankan `npm run build` di komputer Anda, lalu unggah seluruh file di dalam folder `dist/` ke direktori `public_html`.
