@@ -37,36 +37,18 @@ function getLocalNetworkIp() {
 let pool;
 
 // Inisialisasi Database PostgreSQL & Migrasi Tabel Otomatis
-async function initDatabase() {
-  const urlParts = new URL(DATABASE_URL);
-  const targetDbName = urlParts.pathname.replace(/^\//, '') || 'keuanganku';
+export async function initDatabase() {
+  const isCloudDb = DATABASE_URL.includes('supabase.com') || DATABASE_URL.includes('pooler') || DATABASE_URL.includes('sslmode=require');
 
-  // 1. Cek apakah database target sudah ada melalui koneksi default 'postgres'
-  try {
-    const adminUrl = new URL(DATABASE_URL);
-    adminUrl.pathname = '/postgres';
-    const adminClient = new pg.Client({ connectionString: adminUrl.toString() });
-    await adminClient.connect();
-
-    const checkDb = await adminClient.query(
-      `SELECT 1 FROM pg_database WHERE datname = $1`,
-      [targetDbName]
-    );
-
-    if (checkDb.rowCount === 0) {
-      console.log(`[PostgreSQL] Database '${targetDbName}' belum ada. Membuat otomatis...`);
-      await adminClient.query(`CREATE DATABASE "${targetDbName}"`);
-      console.log(`[PostgreSQL] Database '${targetDbName}' berhasil dibuat.`);
-    }
-    await adminClient.end();
-  } catch (err) {
-    console.warn('[PostgreSQL] Pengecekan admin database dilewati:', err.message);
+  // Hubungkan ke database target
+  if (!pool) {
+    pool = new pg.Pool({
+      connectionString: DATABASE_URL,
+      ssl: isCloudDb ? { rejectUnauthorized: false } : false
+    });
   }
 
-  // 2. Hubungkan ke database target
-  pool = new pg.Pool({ connectionString: DATABASE_URL });
-
-  // 3. Buat tabel users dan user_states jika belum ada
+  // Buat tabel users dan user_states jika belum ada
   const createTablesSql = `
     CREATE TABLE IF NOT EXISTS users (
       id VARCHAR(64) PRIMARY KEY,
@@ -85,6 +67,7 @@ async function initDatabase() {
 
   await pool.query(createTablesSql);
   console.log('[PostgreSQL] Tabel users & user_states siap digunakan!');
+  return pool;
 }
 
 // Middleware Autentikasi JWT
@@ -336,7 +319,7 @@ app.use((req, res) => {
   });
 });
 
-// Jalankan Server
+// Jalankan Server (hanya saat running secara lokal / bukan serverless function)
 async function startServer() {
   try {
     await initDatabase();
@@ -347,7 +330,7 @@ async function startServer() {
       console.log('🚀 FinTrack Pro Server (PostgreSQL) Berhasil Aktif!');
       console.log(`💻 Buka di Laptop:  http://localhost:${PORT}`);
       console.log(`📱 Buka di HP (Wi-Fi): http://${localIp}:${PORT}`);
-      console.log('🐘 Database:       PostgreSQL (Database: keuanganku)');
+      console.log('🐘 Database:       PostgreSQL (Supabase Cloud)');
       console.log('====================================================');
     });
   } catch (err) {
@@ -355,4 +338,8 @@ async function startServer() {
   }
 }
 
-startServer();
+if (!process.env.NETLIFY && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
+  startServer();
+}
+
+export default app;
