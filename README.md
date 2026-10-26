@@ -56,28 +56,33 @@ KEUANGANKU/
 
 ---
 
-## 🛠️ Panduan Menjalankan & Pengembangan
+## 🐘 Sinkronisasi Database PostgreSQL (Akses Chrome Laptop & Chrome HP)
 
-### Prasyarat
-- **Node.js** (versi 18 ke atas)
+Aplikasi FinTrack Pro kini terintegrasi langsung dengan database **PostgreSQL** yang berjalan di komputer Anda. Sangat simpel:
+- **Tanpa konfigurasi rumit:** Tidak perlu mendaftar console eksternal, membuat API key, atau menyalin kode yang membingungkan.
+- **Akses dari Laptop & HP:** Akun yang dibuat di laptop langsung tersimpan di PostgreSQL dan bisa langsung dibuka di Chrome HP Anda pada jaringan Wi-Fi yang sama.
+- **Data Terisolasi:** Setiap akun hanya dapat mengakses data keuangannya masing-masing.
 
-### 1. Menjalankan Server Lokal (Development)
-Jalankan perintah berikut di terminal:
-```bash
-npm run dev
+### Konfigurasi Database (`.env`):
+Secara default, aplikasi langsung terhubung ke PostgreSQL lokal Anda:
+```env
+PORT=3000
+DATABASE_URL=postgresql://postgres:password@localhost:5432/keuanganku
+JWT_SECRET=fintrack_pro_jwt_secret_key_2026
 ```
-Buka browser di: `http://localhost:5173`
-
-### 2. Membangun Bundle Produksi (Build)
-Ketika Anda siap meresmikan dan menaikkan (up) website ini ke hosting:
-```bash
-npm run build
-```
-Folder `dist/` akan otomatis terbuat dengan file HTML, CSS, dan JS yang telah dioptimasi, diperkecil (*minified*), dan siap diunggah ke hosting mana saja.
-
-### 3. Menguji Bundle Produksi
-```bash
-npm run preview
-```
+Database `keuanganku` serta tabel `users` dan `user_states` akan dibuat secara otomatis saat server pertama kali dijalankan.
 
 ---
+
+## 🛠️ Panduan Menjalankan
+
+### Menjalankan Server & Membuka di Laptop dan HP:
+Cukup jalankan perintah berikut di terminal:
+```bash
+npm start
+```
+Terminal akan langsung menampilkan alamat akses:
+- **Di Laptop:** Buka `http://localhost:3000`
+- **Di Chrome HP:** Buka alamat IP lokal Anda yang tertera di terminal, contoh: `http://192.168.18.11:3000`
+
+Kini Anda dapat mendaftar, login, dan mencatat transaksi langsung dari laptop maupun HP dengan sinkronisasi database PostgreSQL otomatis!

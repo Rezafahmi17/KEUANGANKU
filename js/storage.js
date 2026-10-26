@@ -1,9 +1,10 @@
 /**
  * FinTrack Pro — Layer Database & Penyimpanan Terisolasi Multi-User
- * Setiap akun memiliki database lokal sendiri yang terpisah secara independen.
+ * Menggunakan Database PostgreSQL di backend dan cache lokal di browser.
  */
 
 import { STORAGE_PREFIX, createBlankState, getRelativeDateStr } from './config.js';
+import { apiGetState, apiSaveState, getAuthToken } from './api.js';
 
 export function getUserStorageKey(userId) {
   if (!userId) return null;
@@ -30,19 +31,49 @@ export function loadUserState(userId) {
     parsed.debts = parsed.debts || [];
     return parsed;
   } catch (err) {
-    console.error(`Gagal membaca data untuk user ${userId}:`, err);
+    console.error(`Gagal membaca cache lokal untuk user ${userId}:`, err);
     return createBlankState();
   }
 }
 
-export function saveUserState(userId, state) {
+/**
+ * Muat data keuangan terbaru dari Database PostgreSQL
+ */
+export async function loadUserPostgresState(userId) {
+  if (getAuthToken()) {
+    try {
+      const remoteState = await apiGetState();
+      if (remoteState && remoteState.wallets) {
+        saveUserLocalCache(userId, remoteState);
+        return remoteState;
+      }
+    } catch (err) {
+      console.warn('Gagal memuat data dari PostgreSQL, menggunakan cache lokal:', err.message);
+    }
+  }
+  return loadUserState(userId);
+}
+
+export function saveUserLocalCache(userId, state) {
   const key = getUserStorageKey(userId);
   if (!key || !state) return;
 
   try {
     localStorage.setItem(key, JSON.stringify(state));
   } catch (err) {
-    console.error(`Gagal menyimpan data untuk user ${userId}:`, err);
+    console.error(`Gagal menyimpan cache data untuk user ${userId}:`, err);
+  }
+}
+
+export function saveUserState(userId, state) {
+  // Simpan segera ke cache lokal untuk responsivitas UI instan
+  saveUserLocalCache(userId, state);
+
+  // Simpan ke PostgreSQL di backend
+  if (getAuthToken()) {
+    apiSaveState(state).catch(err => {
+      console.warn('Gagal sinkronisasi data ke PostgreSQL:', err.message);
+    });
   }
 }
 
@@ -104,6 +135,7 @@ export function backupDataJSON(user, state) {
   const backupPayload = {
     exportedAt: new Date().toISOString(),
     version: '2.0',
+    database: 'PostgreSQL',
     user: {
       id: user.id,
       name: user.name,

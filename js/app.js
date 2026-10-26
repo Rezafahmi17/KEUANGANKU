@@ -16,6 +16,7 @@ import {
 
 import {
   loadUserState,
+  loadUserPostgresState,
   saveUserState,
   clearUserState,
   exportTransactionsCSV as exportCSVService,
@@ -28,6 +29,7 @@ import {
   loginUser,
   restoreSession,
   clearSession,
+  logoutUser,
   changeUserPassword,
   deleteUserAccount,
   evaluatePasswordStrength
@@ -1276,10 +1278,20 @@ function fillUserUI() {
   }
 }
 
-export function enterApp(user) {
+export async function enterApp(user) {
   currentUser = user;
-  // Muat state KHUSUS milik user ini secara terisolasi
+  // Muat state dari cache lokal terlebih dahulu agar tampilan instan
   appState = loadUserState(user.id);
+
+  // Ambil state terbaru dari Database PostgreSQL
+  if (user && user.id) {
+    loadUserPostgresState(user.id).then((pgState) => {
+      if (pgState) {
+        appState = pgState;
+        renderAll();
+      }
+    }).catch(err => console.warn('Pembaruan state PostgreSQL:', err));
+  }
 
   periodType = 'MONTHLY';
   anchorDate = new Date();
@@ -1445,9 +1457,9 @@ export async function handleRegister(e) {
 export function confirmLogout() {
   openConfirmModal(
     'Keluar dari Akun?',
-    'Data keuangan Anda tersimpan aman di perangkat ini. Anda dapat masuk kembali kapan saja.',
-    () => {
-      clearSession();
+    'Data keuangan Anda tersimpan aman di database PostgreSQL. Anda dapat masuk kembali kapan saja dari laptop atau HP.',
+    async () => {
+      await logoutUser();
       currentUser = null;
       appState = createBlankState();
       showAuth('login');
@@ -1459,10 +1471,10 @@ export function confirmLogout() {
 export function confirmDeleteAccount() {
   openConfirmModal(
     'Hapus Akun Permanen?',
-    'Akun beserta seluruh riwayat keuangannya akan dihapus total dari perangkat ini. Tindakan ini tidak dapat dibatalkan.',
-    () => {
+    'Akun beserta seluruh riwayat keuangannya akan dihapus total dari database PostgreSQL. Tindakan ini tidak dapat dibatalkan.',
+    async () => {
       if (!currentUser) return;
-      deleteUserAccount(currentUser.id);
+      await deleteUserAccount(currentUser.id);
       currentUser = null;
       appState = createBlankState();
       showAuth('login');
@@ -1621,3 +1633,4 @@ document.addEventListener('DOMContentLoaded', () => {
     window.lucide.createIcons();
   }
 });
+

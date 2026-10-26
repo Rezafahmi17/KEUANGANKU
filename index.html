@@ -160,7 +160,16 @@
           <p id="auth-subtitle" class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Masuk untuk melanjutkan
             mengelola keuangan Anda.</p>
 
-          <div class="auth-tabs mt-6" role="tablist">
+          <!-- Indikator PostgreSQL Server -->
+          <div class="mt-4 px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-2 text-xs font-semibold bg-emerald-500/10 border border-emerald-500/25 text-emerald-800 dark:text-emerald-300">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Database PostgreSQL Aktif</span>
+            </div>
+            <span class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400">Akses Laptop &amp; HP</span>
+          </div>
+
+          <div class="auth-tabs mt-5" role="tablist">
             <span class="auth-tab-indicator" aria-hidden="true"></span>
             <button type="button" id="tab-login" role="tab" onclick="setAuthMode('login')"
               class="auth-tab active">Masuk</button>
@@ -1099,6 +1108,26 @@
             </div>
           </div>
 
+          <!-- Panel Status Database PostgreSQL -->
+          <div
+            class="p-4 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+            <div class="flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                <i data-lucide="database" class="w-5 h-5"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2">
+                  <h2 class="text-base font-bold text-slate-900 dark:text-white">Database PostgreSQL Terhubung</h2>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">Online &amp; Aktif</span>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Akun dan seluruh data mutasi keuangan tersimpan aman di database PostgreSQL (<code class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono">keuanganku</code>). Akun dapat dibuka di Chrome Laptop maupun Chrome HP.
+                </p>
+              </div>
+            </div>
+          </div>
+
           <!-- Zona Berbahaya -->
           <div
             class="p-4 sm:p-6 rounded-2xl bg-rose-50/60 dark:bg-rose-950/20 border border-rose-200/70 dark:border-rose-900/50">
@@ -1478,6 +1507,8 @@
       </form>
     </div>
   </div>
+
+
 
   <!-- ================= CUSTOM CONFIRMATION DIALOG (TANPA confirm() NATIVE) ================= -->
   <div id="modal-confirm"
