@@ -1,0 +1,10 @@
+# Dependencies
+node_modules/
+
+# Production build
+dist/
+
+# Local logs & cache
+*.log
+.DS_Store
+Thumbs.db

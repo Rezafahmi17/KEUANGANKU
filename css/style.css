@@ -1,0 +1,390 @@
+﻿    /* Pastikan tidak ada horizontal scroll di layar HP maupun Desktop */
+    html,
+    body {
+      overflow-x: hidden;
+      width: 100%;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Angka sejajar sempurna untuk nominal mata uang */
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Custom Scrollbar halus */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.4);
+      border-radius: 9999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(100, 116, 139, 0.6);
+    }
+
+    /* Hide scrollbar for horizontal pill filters on mobile */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* ===== NAVIGASI DESKTOP (SIDEBAR) ===== */
+    .nav-section-label {
+      padding: 0 0.875rem;
+      margin: 0.25rem 0 0.375rem;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #94a3b8;
+    }
+
+    .nav-btn {
+      position: relative;
+      color: #475569;
+    }
+
+    .dark .nav-btn {
+      color: #94a3b8;
+    }
+
+    .nav-btn .nav-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      background: #f1f5f9;
+      transition: all 0.2s ease;
+    }
+
+    .dark .nav-btn .nav-icon {
+      background: rgba(30, 41, 59, 0.9);
+    }
+
+    .nav-btn:not(.active):hover {
+      background: #f8fafc;
+      color: #0f172a;
+    }
+
+    .dark .nav-btn:not(.active):hover {
+      background: rgba(30, 41, 59, 0.55);
+      color: #fff;
+    }
+
+    .nav-btn:not(.active):hover .nav-icon {
+      background: #e0e7ff;
+      color: #4f46e5;
+      transform: scale(1.06);
+    }
+
+    .dark .nav-btn:not(.active):hover .nav-icon {
+      background: rgba(99, 102, 241, 0.2);
+      color: #a5b4fc;
+    }
+
+    .nav-btn.active {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: #fff;
+      box-shadow: 0 10px 22px -10px rgba(79, 70, 229, 0.75);
+    }
+
+    .nav-btn.active .nav-icon {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    .nav-btn .nav-chevron {
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn.active .nav-chevron {
+      opacity: 0.9;
+      transform: translateX(0);
+    }
+
+    /* ===== NAVIGASI MOBILE (FLOATING BOTTOM BAR) ===== */
+    .mobile-nav-btn {
+      color: #94a3b8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 2px 0;
+      font-size: 11px;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+
+    .mobile-nav-btn .m-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 46px;
+      height: 28px;
+      border-radius: 9999px;
+      transition: all 0.25s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .mobile-nav-btn:active .m-icon {
+      transform: scale(0.9);
+    }
+
+    .mobile-nav-btn.active {
+      color: #4f46e5;
+      font-weight: 800;
+    }
+
+    .dark .mobile-nav-btn.active {
+      color: #a5b4fc;
+    }
+
+    .mobile-nav-btn.active .m-icon {
+      background: #e0e7ff;
+    }
+
+    .dark .mobile-nav-btn.active .m-icon {
+      background: rgba(99, 102, 241, 0.25);
+    }
+
+    .fab-btn {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      box-shadow: 0 12px 26px -8px rgba(79, 70, 229, 0.75);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .fab-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .fab-btn:active {
+      transform: scale(0.94);
+    }
+
+    .fab-btn i,
+    .fab-btn svg {
+      transition: transform 0.25s ease;
+    }
+
+    .fab-btn:hover svg {
+      transform: rotate(90deg);
+    }
+
+    /* Animasi transisi antar halaman */
+    @keyframes viewEnter {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .view-enter {
+      animation: viewEnter 0.28s ease-out;
+    }
+
+    /* =====================================================================
+       LIVING GLASS UI â€” latar aurora hidup, kaca transparan & mikro-animasi
+       ===================================================================== */
+    html.has-session #auth-screen { display: none !important; }
+
+    html:not(.dark) body { background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 45%, #ecfeff 100%) !important; }
+    html.dark body { background: #050816 !important; }
+
+    #bg-aurora { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+    .blob-wrap {
+      position: absolute;
+      will-change: transform;
+      transform: translate3d(calc(var(--mx, 0) * var(--d, 20) * 1px), calc(var(--my, 0) * var(--d, 20) * 1px), 0);
+      transition: transform 0.9s cubic-bezier(.2, .8, .2, 1);
+    }
+    .blob { width: 44vmax; height: 44vmax; border-radius: 9999px; filter: blur(70px); opacity: 0.55; will-change: transform; animation: drift 24s ease-in-out infinite alternate; }
+    .blob-1 { background: radial-gradient(circle at 30% 30%, #818cf8, #6366f1 55%, transparent 72%); }
+    .blob-2 { background: radial-gradient(circle at 60% 40%, #f0abfc, #a855f7 55%, transparent 72%); animation-duration: 29s; animation-delay: -6s; }
+    .blob-3 { background: radial-gradient(circle at 40% 60%, #67e8f9, #22d3ee 55%, transparent 72%); animation-duration: 33s; animation-delay: -12s; opacity: 0.45; }
+    .blob-4 { background: radial-gradient(circle at 50% 50%, #fda4af, #fb7185 55%, transparent 72%); animation-duration: 27s; animation-delay: -3s; opacity: 0.4; width: 34vmax; height: 34vmax; }
+    html.dark .blob { opacity: 0.32; }
+    html.dark .blob-3, html.dark .blob-4 { opacity: 0.22; }
+    @keyframes drift {
+      0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+      50% { transform: translate(6vmax, 4vmax) scale(1.12) rotate(25deg); }
+      100% { transform: translate(-4vmax, 7vmax) scale(0.95) rotate(-15deg); }
+    }
+
+    #cursor-glow {
+      position: fixed; left: 0; top: 0; width: 520px; height: 520px; margin: -260px 0 0 -260px;
+      border-radius: 50%; pointer-events: none; z-index: 0; opacity: 0; transition: opacity 0.4s ease; will-change: transform;
+      background: radial-gradient(circle, rgba(129, 140, 248, 0.25), transparent 65%);
+    }
+    #cursor-glow.on { opacity: 1; }
+    html.dark #cursor-glow { background: radial-gradient(circle, rgba(139, 92, 246, 0.22), transparent 65%); }
+
+    /* ---- Kaca (glassmorphism) untuk seluruh kartu, sidebar & panel ---- */
+    html:not(.dark) .bg-white {
+      background-color: rgba(255, 255, 255, 0.55);
+      border-color: rgba(255, 255, 255, 0.8);
+      -webkit-backdrop-filter: blur(16px) saturate(170%);
+      backdrop-filter: blur(16px) saturate(170%);
+      box-shadow: 0 8px 32px -12px rgba(79, 70, 229, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.75);
+    }
+    html.dark .dark\:bg-slate-900 {
+      background-color: rgba(15, 23, 42, 0.5);
+      border-color: rgba(255, 255, 255, 0.09);
+      -webkit-backdrop-filter: blur(16px) saturate(150%);
+      backdrop-filter: blur(16px) saturate(150%);
+      box-shadow: 0 8px 32px -12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+    html:not(.dark) .bg-slate-50 { background-color: rgba(255, 255, 255, 0.5); }
+    html:not(.dark) .bg-slate-100 { background-color: rgba(226, 232, 240, 0.55); }
+    html.dark .dark\:bg-slate-800 { background-color: rgba(30, 41, 59, 0.55); }
+
+    header.sticky { -webkit-backdrop-filter: blur(20px) saturate(180%); backdrop-filter: blur(20px) saturate(180%); }
+
+    /* Modal: kaca lebih pekat + animasi muncul */
+    [id^="modal-"] { -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+    html:not(.dark) [id^="modal-"] > div { background-color: rgba(255, 255, 255, 0.84); }
+    html.dark [id^="modal-"] > div { background-color: rgba(15, 23, 42, 0.84); }
+    [id^="modal-"]:not(.hidden) { animation: fadeIn 0.2s ease-out; }
+    [id^="modal-"]:not(.hidden) > div { animation: modalPop 0.34s cubic-bezier(.2, .9, .3, 1.15); }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes modalPop { from { opacity: 0; transform: translateY(26px) scale(0.96); } to { opacity: 1; transform: none; } }
+
+    /* Kartu yang "hidup" saat disentuh */
+    .lift { transition: transform 0.3s cubic-bezier(.2, .8, .2, 1), box-shadow 0.3s ease; }
+    html body .lift:hover { transform: translateY(-4px); box-shadow: 0 22px 44px -18px rgba(79, 70, 229, 0.4) !important; }
+    button { transition-property: transform, background-color, border-color, color, box-shadow, opacity, filter; transition-duration: 0.18s; }
+    button:not(:disabled):active { transform: scale(0.97); }
+
+    /* Transisi halaman: anak-anak muncul berurutan (stagger) */
+    .view-enter { animation: none !important; }
+    .view-enter > * { animation: riseIn 0.55s cubic-bezier(.2, .8, .2, 1) both; }
+    .view-enter > *:nth-child(2) { animation-delay: 0.06s; }
+    .view-enter > *:nth-child(3) { animation-delay: 0.12s; }
+    .view-enter > *:nth-child(4) { animation-delay: 0.18s; }
+    .view-enter > *:nth-child(5) { animation-delay: 0.24s; }
+    .view-enter > *:nth-child(6) { animation-delay: 0.3s; }
+    .view-enter > *:nth-child(n+7) { animation-delay: 0.36s; }
+    @keyframes riseIn { from { opacity: 0; transform: translateY(16px) scale(0.985); } to { opacity: 1; transform: none; } }
+
+    /* =====================================================================
+       LAYAR LOGIN / DAFTAR
+       ===================================================================== */
+    #auth-screen { transition: opacity 0.45s ease, transform 0.45s ease; }
+    #auth-screen.auth-leave { opacity: 0; transform: scale(1.03); pointer-events: none; }
+    .auth-card {
+      background: rgba(255, 255, 255, 0.55);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      backdrop-filter: blur(28px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.75);
+      box-shadow: 0 30px 80px -24px rgba(79, 70, 229, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      animation: cardIn 0.7s cubic-bezier(.2, .8, .2, 1) both;
+    }
+    html.dark .auth-card { background: rgba(15, 23, 42, 0.55); border-color: rgba(255, 255, 255, 0.1); box-shadow: 0 30px 80px -24px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.07); }
+    @keyframes cardIn { from { opacity: 0; transform: translateY(30px) scale(0.97); } to { opacity: 1; transform: none; } }
+
+    .auth-left {
+      position: relative; overflow: hidden; color: #fff;
+      background: linear-gradient(145deg, rgba(79, 70, 229, 0.94), rgba(124, 58, 237, 0.9) 55%, rgba(192, 38, 211, 0.82));
+    }
+    .auth-left::before, .auth-left::after { content: ''; position: absolute; border-radius: 9999px; pointer-events: none; }
+    .auth-left::before { width: 340px; height: 340px; right: -120px; top: -120px; background: radial-gradient(circle, rgba(255, 255, 255, 0.28), transparent 70%); }
+    .auth-left::after { width: 300px; height: 300px; left: -110px; bottom: -110px; background: radial-gradient(circle, rgba(34, 211, 238, 0.35), transparent 70%); }
+    .glass-mini {
+      background: rgba(255, 255, 255, 0.16); border: 1px solid rgba(255, 255, 255, 0.32);
+      -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+      border-radius: 18px; box-shadow: 0 14px 34px -12px rgba(0, 0, 0, 0.4);
+    }
+    .float-a { animation: floatY 6s ease-in-out infinite; }
+    .float-b { animation: floatY 7.5s ease-in-out -2s infinite; --r: 3deg; }
+    .float-c { animation: floatY 5.5s ease-in-out -3.5s infinite; --r: -2deg; }
+    @keyframes floatY { 0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); } 50% { transform: translateY(-12px) rotate(var(--r, 0deg)); } }
+    .spark { stroke-dasharray: 320; stroke-dashoffset: 320; animation: draw 2.4s ease forwards 0.5s; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    .bar-fill { width: 0; animation: fillTo 1.6s cubic-bezier(.2, .8, .2, 1) forwards 0.7s; }
+    @keyframes fillTo { to { width: var(--w, 80%); } }
+
+    .auth-label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #475569; }
+    html.dark .auth-label { color: #cbd5e1; }
+    .auth-input-wrap { position: relative; }
+    .auth-input {
+      width: 100%; padding: 0.8rem 2.6rem 0.8rem 2.6rem; border-radius: 14px; font-size: 0.875rem; font-weight: 500;
+      border: 1px solid rgba(148, 163, 184, 0.4); background: rgba(255, 255, 255, 0.62); color: #0f172a; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    .auth-input.plain { padding-left: 0.9rem; }
+    .auth-input::placeholder { color: #94a3b8; font-weight: 400; }
+    html.dark .auth-input { background: rgba(15, 23, 42, 0.55); color: #f1f5f9; border-color: rgba(255, 255, 255, 0.12); }
+    .auth-input:focus { border-color: #6366f1; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2); background: rgba(255, 255, 255, 0.92); }
+    html.dark .auth-input:focus { background: rgba(15, 23, 42, 0.85); }
+    .auth-input.invalid { border-color: #f43f5e; box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.15); }
+    .auth-ico { position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; transition: color 0.2s; }
+    .auth-input-wrap:focus-within .auth-ico { color: #6366f1; }
+    .auth-eye { position: absolute; right: 0.45rem; top: 50%; transform: translateY(-50%); padding: 0.45rem; border-radius: 10px; color: #94a3b8; }
+    .auth-eye:hover { color: #4f46e5; background: rgba(99, 102, 241, 0.1); }
+    .auth-eye:active { transform: translateY(-50%) scale(0.9); }
+
+    .auth-tabs { position: relative; display: grid; grid-template-columns: 1fr 1fr; padding: 4px; border-radius: 16px; background: rgba(148, 163, 184, 0.2); }
+    .auth-tab-indicator { position: absolute; top: 4px; bottom: 4px; left: 4px; width: calc(50% - 4px); border-radius: 12px; background: #fff; box-shadow: 0 6px 16px -6px rgba(79, 70, 229, 0.35); transition: transform 0.38s cubic-bezier(.4, 0, .2, 1); }
+    html.dark .auth-tab-indicator { background: rgba(99, 102, 241, 0.4); }
+    #auth-screen[data-mode="register"] .auth-tab-indicator { transform: translateX(100%); }
+    .auth-tab { position: relative; z-index: 1; padding: 0.6rem; font-weight: 700; font-size: 0.8rem; color: #64748b; transition: color 0.25s; }
+    .auth-tab.active { color: #4f46e5; }
+    html.dark .auth-tab { color: #94a3b8; }
+    html.dark .auth-tab.active { color: #e0e7ff; }
+    .auth-form { animation: formIn 0.42s cubic-bezier(.2, .8, .2, 1) both; }
+    @keyframes formIn { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
+    .shake { animation: shake 0.45s !important; }
+    @keyframes shake { 10%, 90% { transform: translateX(-1px); } 20%, 80% { transform: translateX(2px); } 30%, 50%, 70% { transform: translateX(-5px); } 40%, 60% { transform: translateX(5px); } }
+
+    .auth-btn {
+      position: relative; overflow: hidden; width: 100%; padding: 0.85rem 1rem; border-radius: 14px; color: #fff; font-weight: 700; font-size: 0.9rem;
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed 60%, #c026d3);
+      box-shadow: 0 16px 30px -14px rgba(79, 70, 229, 0.8);
+    }
+    .auth-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 20px 36px -14px rgba(79, 70, 229, 0.9); }
+    .auth-btn::after { content: ''; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.38) 50%, transparent 70%); transform: translateX(-120%); }
+    .auth-btn:hover::after { animation: shimmer 0.9s ease; }
+    @keyframes shimmer { to { transform: translateX(120%); } }
+    .auth-btn:disabled { opacity: 0.8; cursor: wait; }
+    .spinner { width: 16px; height: 16px; border: 2px solid rgba(255, 255, 255, 0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .auth-btn-ghost { padding: 0.65rem 1rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid rgba(148, 163, 184, 0.4); color: #334155; background: rgba(255, 255, 255, 0.5); }
+    html.dark .auth-btn-ghost { color: #e2e8f0; background: rgba(30, 41, 59, 0.5); border-color: rgba(255, 255, 255, 0.12); }
+    .auth-btn-ghost:hover { background: rgba(255, 255, 255, 0.85); }
+    html.dark .auth-btn-ghost:hover { background: rgba(51, 65, 85, 0.7); }
+    .auth-error { display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.65rem 0.8rem; border-radius: 12px; font-size: 12px; font-weight: 600; color: #be123c; background: rgba(244, 63, 94, 0.12); border: 1px solid rgba(244, 63, 94, 0.3); animation: formIn 0.3s ease both; }
+    html.dark .auth-error { color: #fda4af; }
+    .auth-error.hidden { display: none; }
+
+    .pw-seg { height: 5px; flex: 1; border-radius: 9999px; background: rgba(148, 163, 184, 0.3); transition: background 0.3s; }
+    #pw-strength[data-level="1"] .pw-seg.on { background: #f43f5e; }
+    #pw-strength[data-level="2"] .pw-seg.on { background: #f59e0b; }
+    #pw-strength[data-level="3"] .pw-seg.on { background: #84cc16; }
+    #pw-strength[data-level="4"] .pw-seg.on { background: #10b981; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+      #cursor-glow { display: none; }
+    }

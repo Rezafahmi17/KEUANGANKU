@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>FinTrack Pro — Manajemen Keuangan Pribadi</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <script>
+    /* Terapkan tema & status sesi sedini mungkin agar tidak ada kedipan layar */
+    (function () {
+      try {
+        if (localStorage.getItem('FINTRACK_THEME') === 'dark') document.documentElement.classList.add('dark');
+        if (localStorage.getItem('FINTRACK_SESSION_V1') || sessionStorage.getItem('FINTRACK_SESSION_V1')) {
+          document.documentElement.classList.add('has-session');
+        }
+      } catch (e) { }
+    })();
+  </script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Modular Glassmorphism Stylesheet -->
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body
+  class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white transition-colors duration-200">
+
+  <!-- ================= APP SHELL WRAPPER ================= -->
+  <!-- ================= LATAR BELAKANG HIDUP (AURORA) ================= -->
+  <div id="bg-aurora" aria-hidden="true">
+    <div class="blob-wrap" style="--d:26; left:-12vmax; top:-14vmax;">
+      <div class="blob blob-1"></div>
+    </div>
+    <div class="blob-wrap" style="--d:-34; right:-14vmax; top:-6vmax;">
+      <div class="blob blob-2"></div>
+    </div>
+    <div class="blob-wrap" style="--d:40; left:-8vmax; bottom:-16vmax;">
+      <div class="blob blob-3"></div>
+    </div>
+    <div class="blob-wrap" style="--d:-22; right:-6vmax; bottom:-10vmax;">
+      <div class="blob blob-4"></div>
+    </div>
+  </div>
+  <div id="cursor-glow" aria-hidden="true"></div>
+
+  <!-- ================= LAYAR LOGIN & DAFTAR ================= -->
+  <div id="auth-screen" data-mode="login" class="fixed inset-0 z-[100] overflow-y-auto">
+    <button type="button" onclick="toggleTheme()" aria-label="Ganti tema terang/gelap"
+      class="auth-card fixed top-4 right-4 z-10 p-2.5 rounded-xl text-slate-600 dark:text-slate-200">
+      <i data-lucide="moon" class="w-4 h-4 dark:hidden"></i>
+      <i data-lucide="sun" class="w-4 h-4 hidden dark:block text-amber-400"></i>
+    </button>
+
+    <div class="min-h-full flex items-center justify-center p-4 sm:p-6">
+      <div class="auth-card w-full max-w-5xl rounded-[28px] overflow-hidden grid lg:grid-cols-[1.05fr_1fr]">
+
+        <!-- Panel Kiri: Brand & Pratinjau -->
+        <aside class="auth-left hidden lg:flex flex-col justify-between p-10 min-h-[660px]">
+          <div class="relative z-10">
+            <div class="flex items-center gap-3">
+              <div class="glass-mini w-11 h-11 flex items-center justify-center">
+                <i data-lucide="wallet-cards" class="w-5 h-5"></i>
+              </div>
+              <div class="font-extrabold text-lg tracking-tight">FinTrack <span
+                  class="text-[10px] align-middle px-1.5 py-0.5 rounded-md bg-white/20 font-bold">PRO</span></div>
+            </div>
+            <h2 class="mt-10 text-4xl font-extrabold leading-[1.15] tracking-tight">Atur uang jadi lebih tenang, setiap
+              hari.</h2>
+            <p class="mt-4 text-sm text-white/80 leading-relaxed max-w-sm">Catat pemasukan &amp; pengeluaran, pantau
+              anggaran, dan capai target tabungan — gratis, cepat, dan mudah dipakai siapa saja.</p>
+            <ul class="mt-7 space-y-3.5 text-sm font-semibold">
+              <li class="flex items-center gap-3"><span
+                  class="glass-mini w-8 h-8 !rounded-xl flex items-center justify-center"><i data-lucide="zap"
+                    class="w-4 h-4"></i></span>Catat transaksi dalam hitungan detik</li>
+              <li class="flex items-center gap-3"><span
+                  class="glass-mini w-8 h-8 !rounded-xl flex items-center justify-center"><i data-lucide="pie-chart"
+                    class="w-4 h-4"></i></span>Grafik &amp; laporan otomatis</li>
+              <li class="flex items-center gap-3"><span
+                  class="glass-mini w-8 h-8 !rounded-xl flex items-center justify-center"><i data-lucide="shield-check"
+                    class="w-4 h-4"></i></span>Privasi terjaga, data tersimpan di perangkat Anda</li>
+            </ul>
+          </div>
+
+          <div class="relative z-10 h-44 mt-8">
+            <div class="glass-mini float-a absolute left-0 top-6 w-60 p-4">
+              <div class="text-[11px] text-white/70 font-semibold">Saldo Total</div>
+              <div class="text-xl font-extrabold tabular-nums">Rp 24.350.000</div>
+              <svg viewBox="0 0 150 44" class="w-full h-9 mt-1" fill="none" stroke="#fff" stroke-width="2.5"
+                stroke-linecap="round">
+                <path class="spark" d="M2 38 C 20 30, 30 36, 50 22 S 80 28, 100 12 S 130 18, 148 4" />
+              </svg>
+            </div>
+            <div class="glass-mini float-b absolute right-0 top-0 w-48 p-3.5">
+              <div class="flex items-center justify-between text-[11px] font-semibold"><span
+                  class="text-white/75">Target Liburan</span><span>80%</span></div>
+              <div class="mt-2 h-2 rounded-full bg-white/20 overflow-hidden">
+                <div class="bar-fill h-full rounded-full bg-gradient-to-r from-cyan-300 to-emerald-300" style="--w:80%">
+                </div>
+              </div>
+            </div>
+            <div class="glass-mini float-c absolute right-6 bottom-0 px-3.5 py-2.5 flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-xl bg-emerald-400/30 flex items-center justify-center"><i
+                  data-lucide="trending-up" class="w-4 h-4 text-emerald-200"></i></span>
+              <div>
+                <div class="text-[11px] text-white/70 font-semibold leading-none">Freelance</div>
+                <div class="text-sm font-extrabold tabular-nums">+Rp 2.750.000</div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Panel Kanan: Formulir -->
+        <section class="p-6 sm:p-10 flex flex-col justify-center">
+          <div class="lg:hidden flex items-center gap-3 mb-6">
+            <div
+              class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 text-white flex items-center justify-center shadow-lg shadow-indigo-500/30">
+              <i data-lucide="wallet-cards" class="w-5 h-5"></i>
+            </div>
+            <div class="font-extrabold text-lg tracking-tight text-slate-900 dark:text-white">FinTrack <span
+                class="text-[10px] px-1.5 py-0.5 rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 font-bold">PRO</span>
+            </div>
+          </div>
+
+          <h1 id="auth-title" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            Selamat datang kembali</h1>
+          <p id="auth-subtitle" class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">Masuk untuk melanjutkan
+            mengelola keuangan Anda.</p>
+
+          <div class="auth-tabs mt-6" role="tablist">
+            <span class="auth-tab-indicator" aria-hidden="true"></span>
+            <button type="button" id="tab-login" role="tab" onclick="setAuthMode('login')"
+              class="auth-tab active">Masuk</button>
+            <button type="button" id="tab-register" role="tab" onclick="setAuthMode('register')" class="auth-tab">Buat
+              Akun</button>
+          </div>
+
+          <!-- Form Masuk -->
+          <form id="form-login" class="auth-form mt-6 space-y-4" onsubmit="handleLogin(event)" novalidate>
+            <div>
+              <label for="login-email" class="auth-label">Email</label>
+              <div class="auth-input-wrap">
+                <i data-lucide="mail" class="auth-ico w-4 h-4"></i>
+                <input id="login-email" type="email" inputmode="email" autocomplete="email" required
+                  placeholder="nama@email.com" class="auth-input" />
+              </div>
+            </div>
+            <div>
+              <label for="login-password" class="auth-label">Password</label>
+              <div class="auth-input-wrap">
+                <i data-lucide="lock" class="auth-ico w-4 h-4"></i>
+                <input id="login-password" type="password" autocomplete="current-password" required
+                  placeholder="Masukkan password" class="auth-input" />
+                <button type="button" class="auth-eye" aria-label="Tampilkan password"
+                  onclick="togglePwVisibility('login-password', this)">
+                  <i data-lucide="eye" class="eye-on w-4 h-4"></i><i data-lucide="eye-off"
+                    class="eye-off hidden w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+            <label
+              class="flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300 cursor-pointer select-none">
+              <input id="login-remember" type="checkbox" checked class="w-4 h-4 rounded accent-indigo-600" />
+              Ingat saya di perangkat ini
+            </label>
+            <div id="login-error" class="auth-error hidden" role="alert"><i data-lucide="alert-circle"
+                class="w-4 h-4 shrink-0 mt-px"></i><span></span></div>
+            <button type="submit" id="login-submit" class="auth-btn"><span>Masuk</span></button>
+            <p class="text-center text-xs text-slate-500 dark:text-slate-400">Belum punya akun? <button type="button"
+                onclick="setAuthMode('register')"
+                class="font-bold text-indigo-600 dark:text-indigo-400 hover:underline">Daftar gratis</button></p>
+          </form>
+
+          <!-- Form Daftar -->
+          <form id="form-register" class="hidden mt-6 space-y-4" onsubmit="handleRegister(event)" novalidate>
+            <div>
+              <label for="reg-name" class="auth-label">Nama lengkap</label>
+              <div class="auth-input-wrap">
+                <i data-lucide="user" class="auth-ico w-4 h-4"></i>
+                <input id="reg-name" type="text" autocomplete="name" required maxlength="60" placeholder="Nama Anda"
+                  class="auth-input" />
+              </div>
+            </div>
+            <div>
+              <label for="reg-email" class="auth-label">Email</label>
+              <div class="auth-input-wrap">
+                <i data-lucide="mail" class="auth-ico w-4 h-4"></i>
+                <input id="reg-email" type="email" inputmode="email" autocomplete="email" required
+                  placeholder="nama@email.com" class="auth-input" />
+              </div>
+            </div>
+            <div>
+              <label for="reg-password" class="auth-label">Password</label>
+              <div class="auth-input-wrap">
+                <i data-lucide="lock" class="auth-ico w-4 h-4"></i>
+                <input id="reg-password" type="password" autocomplete="new-password" required
+                  placeholder="Minimal 8 karakter, huruf &amp; angka" class="auth-input"
+                  oninput="updatePasswordStrength(this.value)" />
+                <button type="button" class="auth-eye" aria-label="Tampilkan password"
+                  onclick="togglePwVisibility('reg-password', this)">
+                  <i data-lucide="eye" class="eye-on w-4 h-4"></i><i data-lucide="eye-off"
+                    class="eye-off hidden w-4 h-4"></i>
+                </button>
+              </div>
+              <div id="pw-strength" data-level="0" class="mt-2 flex items-center gap-1.5">
+                <span class="pw-seg"></span><span class="pw-seg"></span><span class="pw-seg"></span><span
+                  class="pw-seg"></span>
+                <span id="pw-strength-label"
+                  class="ml-1 text-[11px] font-bold text-slate-500 dark:text-slate-400 w-12 text-right"></span>
+              </div>
+            </div>
+            <div>
+              <label for="reg-password2" class="auth-label">Ulangi password</label>
+              <div class="auth-input-wrap">
+                <i data-lucide="shield-check" class="auth-ico w-4 h-4"></i>
+                <input id="reg-password2" type="password" autocomplete="new-password" required
+                  placeholder="Ketik ulang password" class="auth-input" />
+              </div>
+            </div>
+            <label
+              class="flex items-start gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300 cursor-pointer select-none">
+              <input id="reg-sample" type="checkbox" class="w-4 h-4 mt-px rounded accent-indigo-600" />
+              <span>Centang untuk menyetujui
+            </label>
+            <div id="register-error" class="auth-error hidden" role="alert"><i data-lucide="alert-circle"
+                class="w-4 h-4 shrink-0 mt-px"></i><span></span></div>
+            <button type="submit" id="register-submit" class="auth-btn"><span>Buat Akun</span></button>
+            <p class="text-center text-xs text-slate-500 dark:text-slate-400">Sudah punya akun? <button type="button"
+                onclick="setAuthMode('login')"
+                class="font-bold text-indigo-600 dark:text-indigo-400 hover:underline">Masuk</button></p>
+          </form>
+
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= APLIKASI UTAMA (tampil setelah login) ================= -->
+  <div id="app-root"
+    class="hidden relative z-[1] min-h-screen flex flex-col lg:flex-row w-full max-w-[100vw] overflow-x-hidden">
+
+    <!-- ================= DESKTOP SIDEBAR (>1024px) ================= -->
+    <aside
+      class="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-white dark:bg-slate-900 border-r border-slate-200/80 dark:border-slate-800 z-30 select-none">
+      <!-- Brand Logo -->
+      <div class="h-16 px-6 flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+            <i data-lucide="wallet-cards" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <div
+              class="font-extrabold text-base tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
+              FinTrack <span
+                class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">PRO</span>
+            </div>
+            <p class="text-[11px] text-slate-400 dark:text-slate-500">Keuangan Pribadi</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tombol Cepat Tambah Transaksi Desktop -->
+      <div class="p-4">
+        <button onclick="openTransactionModal()"
+          class="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] text-white font-semibold text-sm shadow-sm shadow-indigo-500/20 flex items-center justify-center gap-2 transition">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          <span>Catat Transaksi</span>
+        </button>
+      </div>
+
+      <nav class="flex-1 px-3 pt-1 overflow-y-auto" id="desktop-nav" aria-label="Navigasi utama">
+        <p class="nav-section-label">Menu Utama</p>
+        <div class="space-y-1">
+          <button onclick="switchTab('dashboard')" data-tab="dashboard"
+            class="nav-btn w-full flex items-center gap-3 px-2.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200">
+            <span class="nav-icon"><i data-lucide="layout-dashboard" class="w-4 h-4"></i></span>
+            <span class="flex-1 text-left">Dashboard</span>
+            <i data-lucide="chevron-right" class="nav-chevron w-4 h-4"></i>
+          </button>
+          <button onclick="switchTab('transactions')" data-tab="transactions"
+            class="nav-btn w-full flex items-center gap-3 px-2.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200">
+            <span class="nav-icon"><i data-lucide="arrow-left-right" class="w-4 h-4"></i></span>
+            <span class="flex-1 text-left">Riwayat Transaksi</span>
+            <i data-lucide="chevron-right" class="nav-chevron w-4 h-4"></i>
+          </button>
+          <button onclick="switchTab('wallets')" data-tab="wallets"
+            class="nav-btn w-full flex items-center gap-3 px-2.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200">
+            <span class="nav-icon"><i data-lucide="landmark" class="w-4 h-4"></i></span>
+            <span class="flex-1 text-left">Dompet &amp; Anggaran</span>
+            <i data-lucide="chevron-right" class="nav-chevron w-4 h-4"></i>
+          </button>
+          <button onclick="switchTab('goals')" data-tab="goals"
+            class="nav-btn w-full flex items-center gap-3 px-2.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200">
+            <span class="nav-icon"><i data-lucide="target" class="w-4 h-4"></i></span>
+            <span class="flex-1 text-left">Target &amp; Utang</span>
+            <i data-lucide="chevron-right" class="nav-chevron w-4 h-4"></i>
+          </button>
+        </div>
+
+        <p class="nav-section-label mt-5">Lainnya</p>
+        <div class="space-y-1">
+          <button onclick="switchTab('settings')" data-tab="settings"
+            class="nav-btn w-full flex items-center gap-3 px-2.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200">
+            <span class="nav-icon"><i data-lucide="settings-2" class="w-4 h-4"></i></span>
+            <span class="flex-1 text-left">Pengaturan &amp; Data</span>
+            <i data-lucide="chevron-right" class="nav-chevron w-4 h-4"></i>
+          </button>
+        </div>
+      </nav>
+
+      <!-- Profil Pengguna di Sidebar -->
+      <div
+        class="mx-3 mt-2 p-2.5 rounded-2xl flex items-center gap-3 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+        <div id="user-avatar-sidebar"
+          class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-fuchsia-500 text-white font-extrabold text-sm flex items-center justify-center shrink-0 shadow-md shadow-indigo-500/30">
+          ?</div>
+        <div class="min-w-0 flex-1">
+          <div id="user-name-sidebar" class="text-sm font-bold truncate text-slate-900 dark:text-white">Pengguna</div>
+          <div id="user-email-sidebar" class="text-[11px] truncate text-slate-500 dark:text-slate-400">-</div>
+        </div>
+        <button onclick="confirmLogout()" title="Keluar" aria-label="Keluar dari akun"
+          class="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition">
+          <i data-lucide="log-out" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Total Kekayaan Bersih di Bawah Sidebar -->
+      <div class="p-4 m-3 rounded-2xl bg-slate-900 dark:bg-slate-800/90 text-white relative overflow-hidden">
+        <div class="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-indigo-500/20 blur-xl pointer-events-none">
+        </div>
+        <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+          <span>Total Saldo Semua Dompet</span>
+          <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+        </div>
+        <div id="sidebar-total-networth" class="text-lg font-extrabold tabular-nums tracking-tight text-white truncate">
+          Rp 0
+        </div>
+        <div
+          class="mt-2 pt-2 border-t border-slate-800 dark:border-slate-700/70 flex items-center justify-between text-[11px] text-slate-400">
+          <span id="sidebar-wallet-count">4 Dompet Aktif</span>
+          <button onclick="openTransactionModal('TRANSFER')"
+            class="text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1">
+            <span>Mutasi</span>
+            <i data-lucide="arrow-right" class="w-3 h-3"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ================= MAIN CONTENT AREA ================= -->
+    <div class="flex-1 lg:pl-64 flex flex-col min-w-0 pb-32 lg:pb-12">
+
+      <!-- STICKY TOP HEADER (RESPONSIVE) -->
+      <header
+        class="sticky top-0 z-20 bg-white/85 dark:bg-slate-900/85 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3">
+          <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+
+            <!-- Baris Atas Mobile: Logo + Quick Icons -->
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5 lg:hidden">
+                <div
+                  class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-sm">
+                  <i data-lucide="wallet-cards" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <h1 class="font-bold text-sm leading-tight text-slate-900 dark:text-white flex items-center gap-1">
+                    FinTrack <span
+                      class="text-[9px] px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 font-bold">PRO</span>
+                  </h1>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400" id="mobile-header-subtitle">Transparansi
+                    Arus Kas</p>
+                </div>
+              </div>
+
+              <!-- Judul Halaman di Desktop -->
+              <div class="hidden lg:block">
+                <h1 id="desktop-page-title" class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+                  Dashboard Keuangan</h1>
+                <p id="desktop-page-subtitle" class="text-xs text-slate-500 dark:text-slate-400">Pantau pemasukan,
+                  pengeluaran, dan transparansi anggaran secara real-time</p>
+              </div>
+
+              <!-- Action Buttons Kanan (Mobile) -->
+              <div class="flex items-center gap-1.5 lg:hidden">
+                <button onclick="togglePrivacyMode()" id="btn-privacy-mobile" title="Mode Privasi (Sembunyikan Saldo)"
+                  class="p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                  <i data-lucide="eye" class="w-4 h-4"></i>
+                </button>
+                <button onclick="toggleTheme()" title="Ganti Tema Terang/Gelap"
+                  class="p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                  <i data-lucide="moon" class="w-4 h-4 dark:hidden"></i>
+                  <i data-lucide="sun" class="w-4 h-4 hidden dark:block text-amber-400"></i>
+                </button>
+                <button onclick="switchTab('settings')" id="btn-settings-mobile" title="Pengaturan &amp; Data"
+                  class="p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                  <span id="user-avatar-mobile"
+                    class="w-5 h-5 rounded-lg bg-gradient-to-br from-indigo-500 to-fuchsia-500 text-white text-[10px] font-extrabold flex items-center justify-center">?</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Baris Filter Periode (Mingguan / Bulanan / Tahunan / Semua) & Navigasi Tanggal -->
+            <div id="period-bar" class="flex flex-wrap items-center justify-between gap-2">
+              <!-- Segmented Period Switcher -->
+              <div
+                class="inline-flex p-1 rounded-xl bg-slate-100 dark:bg-slate-800/90 border border-slate-200/60 dark:border-slate-700/60 w-full sm:w-auto justify-between sm:justify-start">
+                <button onclick="setPeriodType('WEEKLY')" data-period="WEEKLY"
+                  class="period-tab-btn flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                  Mingguan
+                </button>
+                <button onclick="setPeriodType('MONTHLY')" data-period="MONTHLY"
+                  class="period-tab-btn flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                  Bulanan
+                </button>
+                <button onclick="setPeriodType('YEARLY')" data-period="YEARLY"
+                  class="period-tab-btn flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                  Tahunan
+                </button>
+                <button onclick="setPeriodType('ALL')" data-period="ALL"
+                  class="period-tab-btn flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs font-semibold transition">
+                  Semua
+                </button>
+              </div>
+
+              <!-- Navigator Tanggal (< Prev | Label | Next >) -->
+              <div class="flex items-center justify-between sm:justify-end gap-1.5 w-full sm:w-auto">
+                <div id="period-nav-controls"
+                  class="flex items-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-1.5 py-1 shadow-2xs flex-1 sm:flex-initial justify-between">
+                  <button onclick="navigatePeriod(-1)" title="Periode Sebelumnya"
+                    class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                  </button>
+                  <button onclick="resetPeriodToToday()" title="Klik untuk kembali ke hari ini"
+                    class="px-2.5 text-xs font-bold text-slate-800 dark:text-slate-100 tabular-nums text-center min-w-[135px] truncate hover:text-indigo-600 dark:hover:text-indigo-400 transition"
+                    id="active-period-label">
+                    Bulan Ini
+                  </button>
+                  <button onclick="navigatePeriod(1)" title="Periode Berikutnya"
+                    class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition">
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                  </button>
+                </div>
+
+                <!-- Action Buttons Kanan (Desktop) -->
+                <div class="hidden lg:flex items-center gap-1.5">
+                  <button onclick="togglePrivacyMode()" id="btn-privacy-desktop"
+                    title="Mode Privasi (Sembunyikan Nominal)"
+                    class="p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i data-lucide="eye" class="w-4 h-4"></i>
+                  </button>
+                  <button onclick="toggleTheme()" title="Ganti Tema Terang/Gelap"
+                    class="p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                    <i data-lucide="moon" class="w-4 h-4 dark:hidden"></i>
+                    <i data-lucide="sun" class="w-4 h-4 hidden dark:block text-amber-400"></i>
+                  </button>
+                  <button onclick="exportTransactionsCSV()" title="Unduh Laporan CSV (Excel)"
+                    class="px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold flex items-center gap-1.5 transition">
+                    <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                    <span>CSV</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </header>
+
+      <!-- ================= MAIN BODY VIEWS ================= -->
+      <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 pt-5 space-y-6">
+
+        <!-- ==================== TAB 1: DASHBOARD & ANALITIK ==================== -->
+        <section id="view-dashboard" class="space-y-6">
+
+          <!-- 4-Column Metric Summary Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3.5 sm:gap-4">
+            <!-- Card 1: Total Saldo Dompet -->
+            <div
+              class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs flex flex-col justify-between relative overflow-hidden">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Total
+                  Saldo Aktif</span>
+                <div
+                  class="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                  <i data-lucide="wallet" class="w-4 h-4"></i>
+                </div>
+              </div>
+              <div class="mt-3">
+                <div id="metric-total-balance"
+                  class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tabular-nums tracking-tight truncate">
+                  Rp 0
+                </div>
+                <div class="mt-1.5 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                  <span id="metric-wallet-summary">Gabungan semua dompet</span>
+                  <button onclick="switchTab('wallets')"
+                    class="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline">Kelola</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: Pemasukan Periode Ini -->
+            <div
+              class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs flex flex-col justify-between">
+              <div class="flex items-center justify-between">
+                <span
+                  class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Pemasukan
+                  (<span class="period-short-label">Bulan Ini</span>)</span>
+                <div
+                  class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                  <i data-lucide="trending-up" class="w-4 h-4"></i>
+                </div>
+              </div>
+              <div class="mt-3">
+                <div id="metric-period-income"
+                  class="text-xl sm:text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 tabular-nums tracking-tight truncate">
+                  +Rp 0
+                </div>
+                <div class="mt-1.5 flex items-center justify-between text-xs">
+                  <span id="metric-income-comparison" class="text-slate-500 dark:text-slate-400">0 transaksi
+                    masuk</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3: Pengeluaran Periode Ini -->
+            <div
+              class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs flex flex-col justify-between">
+              <div class="flex items-center justify-between">
+                <span
+                  class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Pengeluaran
+                  (<span class="period-short-label">Bulan Ini</span>)</span>
+                <div
+                  class="w-9 h-9 rounded-xl bg-rose-50 dark:bg-rose-950/70 text-rose-600 dark:text-rose-400 flex items-center justify-center">
+                  <i data-lucide="trending-down" class="w-4 h-4"></i>
+                </div>
+              </div>
+              <div class="mt-3">
+                <div id="metric-period-expense"
+                  class="text-xl sm:text-2xl font-extrabold text-rose-600 dark:text-rose-400 tabular-nums tracking-tight truncate">
+                  -Rp 0
+                </div>
+                <div class="mt-1.5 flex items-center justify-between text-xs">
+                  <span id="metric-expense-comparison" class="text-slate-500 dark:text-slate-400">0 transaksi
+                    keluar</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 4: Selisih Arus Kas Bersih (Net Cash Flow & Rasio Tabungan) -->
+            <div
+              class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs flex flex-col justify-between">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Arus Kas
+                  Bersih</span>
+                <div id="metric-net-badge"
+                  class="px-2 py-1 rounded-lg text-[11px] font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 tabular-nums">
+                  Rasio 0%
+                </div>
+              </div>
+              <div class="mt-3">
+                <div id="metric-net-cashflow"
+                  class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tabular-nums tracking-tight truncate">
+                  Rp 0
+                </div>
+                <div class="mt-1.5 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                  <span id="metric-net-status">Selisih Pemasukan - Pengeluaran</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Row: Cash Flow Trend (Left 7 cols) & Category Breakdown (Right 5 cols) -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+            <!-- Grafik Tren Arus Kas -->
+            <div
+              class="lg:col-span-7 p-4 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs flex flex-col justify-between">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                <div>
+                  <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <span>Tren Transparansi Arus Kas</span>
+                  </h2>
+                  <p id="trend-chart-subtitle" class="text-xs text-slate-500 dark:text-slate-400">Perbandingan Pemasukan
+                    vs Pengeluaran pada periode terpilih</p>
+                </div>
+                <div class="flex items-center gap-3 text-xs font-semibold">
+                  <span class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+                    <span class="w-2.5 h-2.5 rounded-sm bg-emerald-500 inline-block"></span> Pemasukan
+                  </span>
+                  <span class="flex items-center gap-1.5 text-rose-600 dark:text-rose-400">
+                    <span class="w-2.5 h-2.5 rounded-sm bg-rose-500 inline-block"></span> Pengeluaran
+                  </span>
+                </div>
+              </div>
+              <div class="relative w-full h-64 sm:h-72">
+                <canvas id="cashflowTrendChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Distribusi Kategori (Donut + Rincian Persentase) -->
+            <div
+              class="lg:col-span-5 p-4 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs flex flex-col">
+              <div class="flex items-center justify-between gap-2 mb-4">
+                <div>
+                  <h2 class="text-base font-bold text-slate-900 dark:text-white">Rincian per Kategori</h2>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Transparansi alokasi dana</p>
+                </div>
+                <!-- Switcher Pengeluaran / Pemasukan -->
+                <div
+                  class="inline-flex p-0.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700">
+                  <button onclick="setCategoryChartMode('EXPENSE')" id="cat-mode-expense"
+                    class="px-2.5 py-1 rounded-lg text-xs font-bold transition bg-white dark:bg-slate-900 text-rose-600 shadow-2xs">
+                    Keluar
+                  </button>
+                  <button onclick="setCategoryChartMode('INCOME')" id="cat-mode-income"
+                    class="px-2.5 py-1 rounded-lg text-xs font-bold transition text-slate-500 dark:text-slate-400">
+                    Masuk
+                  </button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 items-center flex-1">
+                <div class="relative w-40 h-40 mx-auto">
+                  <canvas id="categoryDonutChart"></canvas>
+                  <div
+                    class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center px-2">
+                    <span id="donut-center-label" class="text-[10px] font-semibold uppercase text-slate-400">Total
+                      Keluar</span>
+                    <span id="donut-center-amount"
+                      class="text-xs font-extrabold text-slate-800 dark:text-slate-100 tabular-nums truncate max-w-[110px]">Rp
+                      0</span>
+                  </div>
+                </div>
+                <!-- Daftar Persentase Kategori -->
+                <div id="category-breakdown-list" class="space-y-2.5 max-h-48 overflow-y-auto pr-1">
+                  <!-- Diisi oleh JavaScript -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Ringkasan Saldo per Dompet & Peringatan Anggaran Bulanan -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+            <!-- Daftar Dompet Cepat -->
+            <div
+              class="lg:col-span-5 p-4 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h2 class="text-base font-bold text-slate-900 dark:text-white">Posisi Saldo Dompet</h2>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Rekening Bank, E-Wallet & Uang Tunai</p>
+                </div>
+                <button onclick="openTransactionModal('TRANSFER')"
+                  class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1">
+                  <i data-lucide="repeat" class="w-3.5 h-3.5"></i>
+                  <span>Transfer</span>
+                </button>
+              </div>
+              <div id="dashboard-wallets-list" class="space-y-2.5">
+                <!-- Diisi oleh JS -->
+              </div>
+            </div>
+
+            <!-- Pantauan Anggaran (Budgeting) -->
+            <div
+              class="lg:col-span-7 p-4 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h2 class="text-base font-bold text-slate-900 dark:text-white">Kontrol Anggaran Kategori</h2>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Indikator otomatis Hijau (&lt;70%), Kuning
+                    (70-90%), Merah (&gt;90%)</p>
+                </div>
+                <button onclick="switchTab('wallets')"
+                  class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+                  Atur Batas
+                </button>
+              </div>
+              <div id="dashboard-budgets-list" class="space-y-3.5">
+                <!-- Diisi oleh JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Transaksi Terbaru pada Periode Ini -->
+          <div
+            class="p-4 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+              <div>
+                <h2 class="text-base font-bold text-slate-900 dark:text-white">Transaksi Periode Ini</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Menampilkan catatan transaksi terbaru dalam
+                  rentang waktu aktif</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="openTransactionModal()"
+                  class="px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-300 text-xs font-bold hover:bg-indigo-100 transition flex items-center gap-1.5">
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                  <span>Tambah</span>
+                </button>
+                <button onclick="switchTab('transactions')"
+                  class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                  Lihat Semua
+                </button>
+              </div>
+            </div>
+
+            <!-- Desktop Table (<768px hidden, >=768px table) -->
+            <div class="hidden md:block overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr
+                    class="border-b border-slate-200/80 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                    <th class="py-3 px-3">Tanggal</th>
+                    <th class="py-3 px-3">Kategori</th>
+                    <th class="py-3 px-3">Dompet</th>
+                    <th class="py-3 px-3">Catatan / Deskripsi</th>
+                    <th class="py-3 px-3 text-right">Nominal</th>
+                    <th class="py-3 px-3 text-right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboard-tx-table-body" class="divide-y divide-slate-100 dark:divide-slate-800/70 text-sm">
+                  <!-- Diisi oleh JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Mobile Stacked Cards (<768px visible, >=768px hidden) -->
+            <div id="dashboard-tx-mobile-list" class="md:hidden space-y-2.5">
+              <!-- Diisi oleh JS -->
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ==================== TAB 2: RIWAYAT TRANSAKSI LENGKAP ==================== -->
+        <section id="view-transactions" class="hidden space-y-5">
+          <!-- Bar Pencarian & Filter Multi-Dimensi -->
+          <div
+            class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h2 class="text-base font-bold text-slate-900 dark:text-white">Buku Besar & Riwayat Transaksi</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Semua catatan mengikuti periode waktu yang dipilih
+                  di atas</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="openTransactionModal()"
+                  class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs transition">
+                  <i data-lucide="plus" class="w-4 h-4"></i>
+                  <span>Transaksi Baru</span>
+                </button>
+                <button onclick="exportTransactionsCSV()"
+                  class="px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                  <i data-lucide="file-spreadsheet" class="w-4 h-4 text-emerald-600"></i>
+                  <span>Ekspor CSV</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <!-- Search Input -->
+              <div class="relative">
+                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                <input type="text" id="filter-search" oninput="renderAll()" placeholder="Cari catatan, kategori..."
+                  class="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+              </div>
+
+              <!-- Filter Tipe -->
+              <select id="filter-type" onchange="renderAll()"
+                class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="ALL">Semua Tipe Transaksi</option>
+                <option value="INCOME">Pemasukan (+)</option>
+                <option value="EXPENSE">Pengeluaran (-)</option>
+                <option value="TRANSFER">Transfer Antar-Dompet</option>
+              </select>
+
+              <!-- Filter Dompet -->
+              <select id="filter-wallet" onchange="renderAll()"
+                class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="ALL">Semua Dompet / Rekening</option>
+              </select>
+
+              <!-- Filter Kategori -->
+              <select id="filter-category" onchange="renderAll()"
+                class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="ALL">Semua Kategori</option>
+              </select>
+            </div>
+
+            <!-- Bar Ringkasan Hasil Filter -->
+            <div
+              class="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <span id="tx-filtered-count" class="font-semibold text-slate-500 dark:text-slate-400">Menampilkan 0
+                transaksi</span>
+              <div class="flex flex-wrap items-center gap-4 tabular-nums font-bold">
+                <span class="text-emerald-600 dark:text-emerald-400">Masuk: <span id="tx-filtered-income">Rp
+                    0</span></span>
+                <span class="text-rose-600 dark:text-rose-400">Keluar: <span id="tx-filtered-expense">Rp 0</span></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabel / Kartu Daftar Transaksi -->
+          <div
+            class="p-4 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+            <!-- Desktop Data Table -->
+            <div class="hidden md:block overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr
+                    class="border-b border-slate-200/80 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                    <th class="py-3 px-3">Tanggal</th>
+                    <th class="py-3 px-3">Tipe</th>
+                    <th class="py-3 px-3">Kategori</th>
+                    <th class="py-3 px-3">Dompet / Mutasi</th>
+                    <th class="py-3 px-3">Deskripsi</th>
+                    <th class="py-3 px-3 text-right">Nominal</th>
+                    <th class="py-3 px-3 text-right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="full-tx-table-body" class="divide-y divide-slate-100 dark:divide-slate-800/70 text-sm">
+                  <!-- Diisi oleh JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Mobile Stacked Cards -->
+            <div id="full-tx-mobile-list" class="md:hidden space-y-2.5">
+              <!-- Diisi oleh JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB 3: DOMPET & ANGGARAN (BUDGETING) ==================== -->
+        <section id="view-wallets" class="hidden space-y-6">
+          <!-- Bagian Dompet / Rekening -->
+          <div
+            class="p-4 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+              <div>
+                <h2 class="text-base font-bold text-slate-900 dark:text-white">Manajemen Multi-Dompet & Rekening</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Saldo dihitung otomatis secara atomik dari saldo
+                  awal + seluruh mutasi transaksi</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="openTransactionModal('TRANSFER')"
+                  class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 text-xs font-bold flex items-center gap-1.5 transition">
+                  <i data-lucide="arrow-left-right" class="w-4 h-4 text-indigo-500"></i>
+                  <span>Transfer Antar-Dompet</span>
+                </button>
+                <button onclick="openWalletModal()"
+                  class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1.5 transition">
+                  <i data-lucide="plus" class="w-4 h-4"></i>
+                  <span>Tambah Dompet</span>
+                </button>
+              </div>
+            </div>
+
+            <div id="wallets-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <!-- Diisi oleh JS -->
+            </div>
+          </div>
+
+          <!-- Bagian Pengaturan Anggaran Bulanan per Kategori -->
+          <div
+            class="p-4 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+              <div>
+                <h2 class="text-base font-bold text-slate-900 dark:text-white">Batas Anggaran Pengeluaran Bulanan
+                  (Budgeting)</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Klik pada batas anggaran kategori mana pun untuk
+                  mengubah plafon bulanan Anda</p>
+              </div>
+              <div
+                class="text-xs font-bold tabular-nums px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                Total Plafon Bulanan: <span id="total-budget-limit" class="text-indigo-600 dark:text-indigo-400">Rp
+                  0</span>
+              </div>
+            </div>
+
+            <div id="budgets-management-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Diisi oleh JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB 4: TARGET TABUNGAN & CATATAN UTANG ==================== -->
+        <section id="view-goals" class="hidden space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Target Tabungan (Financial Goals / Sinking Funds) -->
+            <div
+              class="lg:col-span-7 p-4 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+                <div>
+                  <h2 class="text-base font-bold text-slate-900 dark:text-white">Target Tabungan (Financial Goals)</h2>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Pantau progres dana darurat, barang impian, atau
+                    rencana masa depan</p>
+                </div>
+                <button onclick="openGoalModal()"
+                  class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1.5 self-start sm:self-auto transition">
+                  <i data-lucide="plus" class="w-4 h-4"></i>
+                  <span>Target Baru</span>
+                </button>
+              </div>
+
+              <div id="goals-list" class="space-y-4">
+                <!-- Diisi oleh JS -->
+              </div>
+            </div>
+
+            <!-- Pencatatan Utang & Piutang -->
+            <div
+              class="lg:col-span-5 p-4 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+                <div>
+                  <h2 class="text-base font-bold text-slate-900 dark:text-white">Catatan Utang & Piutang</h2>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Agar split-bill atau cicilan tidak terlupakan
+                  </p>
+                </div>
+                <button onclick="openDebtModal()"
+                  class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 self-start sm:self-auto transition">
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                  <span>Catat</span>
+                </button>
+              </div>
+
+              <div id="debts-list" class="space-y-3">
+                <!-- Diisi oleh JS -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== TAB 5: PENGATURAN & DATA ==================== -->
+        <section id="view-settings" class="hidden space-y-6">
+          <!-- Kartu Akun -->
+          <div
+            class="p-4 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div id="user-avatar-settings"
+                class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-fuchsia-500 text-white text-xl font-extrabold flex items-center justify-center shadow-lg shadow-indigo-500/30 shrink-0">
+                ?</div>
+              <div class="flex-1 min-w-0">
+                <h2 id="user-name-settings" class="text-base font-bold text-slate-900 dark:text-white truncate">Pengguna
+                </h2>
+                <p id="user-email-settings" class="text-xs text-slate-500 dark:text-slate-400 truncate">-</p>
+                <p id="user-since-settings" class="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5"></p>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <button onclick="toggleChangePasswordPanel()" class="auth-btn-ghost"><i data-lucide="key-round"
+                    class="w-4 h-4 text-indigo-500"></i><span>Ubah Password</span></button>
+                <button onclick="confirmLogout()" class="auth-btn-ghost"><i data-lucide="log-out"
+                    class="w-4 h-4 text-rose-500"></i><span>Keluar</span></button>
+              </div>
+            </div>
+            <form id="form-change-password"
+              class="hidden mt-5 pt-5 border-t border-slate-200/60 dark:border-white/10 space-y-3"
+              onsubmit="handleChangePassword(event)" novalidate>
+              <div class="grid sm:grid-cols-3 gap-3">
+                <div><label for="cp-old" class="auth-label">Password saat ini</label><input id="cp-old" type="password"
+                    autocomplete="current-password" class="auth-input plain" /></div>
+                <div><label for="cp-new" class="auth-label">Password baru</label><input id="cp-new" type="password"
+                    autocomplete="new-password" placeholder="Min. 8 karakter" class="auth-input plain" /></div>
+                <div><label for="cp-confirm" class="auth-label">Ulangi password baru</label><input id="cp-confirm"
+                    type="password" autocomplete="new-password" class="auth-input plain" /></div>
+              </div>
+              <div id="cp-error" class="auth-error hidden" role="alert"><i data-lucide="alert-circle"
+                  class="w-4 h-4 shrink-0 mt-px"></i><span></span></div>
+              <button type="submit" id="cp-submit" class="auth-btn !w-auto px-6 !py-2.5 !text-xs"><span>Simpan Password
+                  Baru</span></button>
+            </form>
+          </div>
+
+          <!-- Ringkasan Data Tersimpan -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+            <div
+              class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+              <div
+                class="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-3">
+                <i data-lucide="arrow-left-right" class="w-4 h-4"></i>
+              </div>
+              <div id="stat-tx-count" class="text-2xl font-extrabold tabular-nums text-slate-900 dark:text-white">0
+              </div>
+              <div class="text-xs text-slate-500 dark:text-slate-400">Transaksi tercatat</div>
+            </div>
+            <div
+              class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+              <div
+                class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-3">
+                <i data-lucide="landmark" class="w-4 h-4"></i>
+              </div>
+              <div id="stat-wallet-count" class="text-2xl font-extrabold tabular-nums text-slate-900 dark:text-white">0
+              </div>
+              <div class="text-xs text-slate-500 dark:text-slate-400">Dompet aktif</div>
+            </div>
+            <div
+              class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+              <div
+                class="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-950/70 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-3">
+                <i data-lucide="target" class="w-4 h-4"></i>
+              </div>
+              <div id="stat-goal-count" class="text-2xl font-extrabold tabular-nums text-slate-900 dark:text-white">0
+              </div>
+              <div class="text-xs text-slate-500 dark:text-slate-400">Target tabungan</div>
+            </div>
+            <div
+              class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+              <div
+                class="w-9 h-9 rounded-xl bg-rose-50 dark:bg-rose-950/70 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-3">
+                <i data-lucide="hand-coins" class="w-4 h-4"></i>
+              </div>
+              <div id="stat-debt-count" class="text-2xl font-extrabold tabular-nums text-slate-900 dark:text-white">0
+              </div>
+              <div class="text-xs text-slate-500 dark:text-slate-400">Catatan utang/piutang</div>
+            </div>
+          </div>
+
+          <!-- Panel Tampilan -->
+          <div
+            class="p-4 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+            <h2 class="text-base font-bold text-slate-900 dark:text-white mb-1">Tampilan &amp; Privasi</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Sesuaikan tema dan sembunyikan nominal saat
+              berada di tempat umum.</p>
+            <div class="flex flex-wrap items-center gap-3">
+              <button onclick="toggleTheme()"
+                class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-2 transition">
+                <i data-lucide="moon" class="w-4 h-4 text-indigo-500 dark:hidden"></i>
+                <i data-lucide="sun" class="w-4 h-4 text-amber-400 hidden dark:block"></i>
+                <span>Ganti Tema Terang/Gelap</span>
+              </button>
+              <button onclick="togglePrivacyMode()"
+                class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-2 transition">
+                <i data-lucide="eye-off" class="w-4 h-4 text-indigo-500"></i>
+                <span>Mode Privasi</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Panel Manajemen Data & Backup -->
+          <div
+            class="p-4 sm:p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+            <h2 class="text-base font-bold text-slate-900 dark:text-white mb-1">Penyimpanan &amp; Pencadangan Data</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Seluruh data Anda tersimpan secara lokal di
+              perangkat ini (<code
+                class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono">localStorage</code>). Anda dapat
+              mengunduh cadangan penuh kapan saja.</p>
+
+            <div class="flex flex-wrap items-center gap-3">
+              <button onclick="exportTransactionsCSV()"
+                class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-2 transition shadow-xs">
+                <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+                <span>Ekspor Laporan Excel (CSV)</span>
+              </button>
+              <button onclick="backupDataJSON()"
+                class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-2 transition shadow-xs">
+                <i data-lucide="download-cloud" class="w-4 h-4"></i>
+                <span>Backup Data Lengkap (.JSON)</span>
+              </button>
+              <label
+                class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-2 cursor-pointer transition">
+                <i data-lucide="upload-cloud" class="w-4 h-4 text-indigo-500"></i>
+                <span>Restore dari File JSON</span>
+                <input type="file" accept=".json" onchange="restoreDataJSON(event)" class="hidden" />
+              </label>
+            </div>
+          </div>
+
+          <!-- Zona Berbahaya -->
+          <div
+            class="p-4 sm:p-6 rounded-2xl bg-rose-50/60 dark:bg-rose-950/20 border border-rose-200/70 dark:border-rose-900/50">
+            <h2 class="text-base font-bold text-rose-700 dark:text-rose-300 mb-1">Zona Berbahaya</h2>
+            <p class="text-xs text-rose-600/80 dark:text-rose-300/70 mb-4">Tindakan ini mengubah data akun yang sedang
+              aktif dan tidak dapat dibatalkan. Disarankan membuat backup terlebih dahulu.</p>
+            <div class="flex flex-wrap items-center gap-3">
+              <button onclick="confirmResetDemoData()"
+                class="px-4 py-2.5 rounded-xl border border-rose-300 dark:border-rose-800 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-950/60 text-xs font-bold flex items-center gap-2 transition">
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i><span>Muat Data Contoh</span>
+              </button>
+              <button onclick="confirmClearAllData()"
+                class="px-4 py-2.5 rounded-xl border border-rose-300 dark:border-rose-800 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-950/60 text-xs font-bold flex items-center gap-2 transition">
+                <i data-lucide="eraser" class="w-4 h-4"></i><span>Kosongkan Semua Data</span>
+              </button>
+              <button onclick="confirmDeleteAccount()"
+                class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold flex items-center gap-2 transition shadow-xs">
+                <i data-lucide="user-x" class="w-4 h-4"></i><span>Hapus Akun</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- ================= MOBILE FLOATING BOTTOM NAVIGATION (<1024px) ================= -->
+    <nav class="lg:hidden fixed inset-x-3 z-30 select-none" style="bottom: calc(0.75rem + env(safe-area-inset-bottom));"
+      aria-label="Navigasi utama">
+      <div
+        class="grid grid-cols-5 items-end px-1.5 pt-1.5 pb-1.5 rounded-3xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-slate-900/15">
+        <button onclick="switchTab('dashboard')" data-tab="dashboard" class="mobile-nav-btn">
+          <span class="m-icon"><i data-lucide="layout-dashboard" class="w-[18px] h-[18px]"></i></span>
+          <span>Beranda</span>
+        </button>
+        <button onclick="switchTab('transactions')" data-tab="transactions" class="mobile-nav-btn">
+          <span class="m-icon"><i data-lucide="arrow-left-right" class="w-[18px] h-[18px]"></i></span>
+          <span>Transaksi</span>
+        </button>
+        <div class="flex flex-col items-center justify-end">
+          <button onclick="openTransactionModal()" aria-label="Catat Transaksi Baru"
+            class="fab-btn -mt-9 w-14 h-14 rounded-2xl text-white flex items-center justify-center border-4 border-white dark:border-slate-900">
+            <i data-lucide="plus" class="w-6 h-6"></i>
+          </button>
+          <span class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 mt-0.5">Catat</span>
+        </div>
+        <button onclick="switchTab('wallets')" data-tab="wallets" class="mobile-nav-btn">
+          <span class="m-icon"><i data-lucide="landmark" class="w-[18px] h-[18px]"></i></span>
+          <span>Dompet</span>
+        </button>
+        <button onclick="switchTab('goals')" data-tab="goals" class="mobile-nav-btn">
+          <span class="m-icon"><i data-lucide="target" class="w-[18px] h-[18px]"></i></span>
+          <span>Target</span>
+        </button>
+      </div>
+    </nav>
+
+  </div>
+
+  <!-- ================= MODAL 1: TAMBAH / EDIT TRANSAKSI ================= -->
+  <div id="modal-transaction"
+    class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center bg-slate-950/60 backdrop-blur-xs p-0 sm:p-4">
+    <div
+      class="w-full sm:max-w-lg bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
+      <!-- Modal Header -->
+      <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <h3 id="modal-tx-title" class="text-base font-bold text-slate-900 dark:text-white">Catat Transaksi Baru</h3>
+        <button onclick="closeTransactionModal()"
+          class="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body Form -->
+      <form id="form-transaction" onsubmit="handleSaveTransaction(event)" class="p-5 space-y-4 overflow-y-auto">
+        <input type="hidden" id="tx-id" value="" />
+
+        <!-- Tab Tipe Transaksi -->
+        <div class="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-slate-800">
+          <button type="button" onclick="setTxFormType('EXPENSE')" id="btn-type-expense"
+            class="py-2 rounded-lg text-xs font-bold transition">
+            Pengeluaran
+          </button>
+          <button type="button" onclick="setTxFormType('INCOME')" id="btn-type-income"
+            class="py-2 rounded-lg text-xs font-bold transition">
+            Pemasukan
+          </button>
+          <button type="button" onclick="setTxFormType('TRANSFER')" id="btn-type-transfer"
+            class="py-2 rounded-lg text-xs font-bold transition">
+            Transfer
+          </button>
+        </div>
+
+        <!-- Nominal Rupiah -->
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Nominal (Rp)</label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-extrabold text-slate-400">Rp</span>
+            <input type="number" id="tx-amount" required min="1" step="1" placeholder="0"
+              class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-lg font-extrabold tabular-nums text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+          <!-- Quick Nominal Chips -->
+          <div class="flex flex-wrap gap-1.5 mt-2">
+            <button type="button" onclick="setQuickAmount(15000)"
+              class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 text-[11px] font-semibold text-slate-600 dark:text-slate-300 transition">15rb</button>
+            <button type="button" onclick="setQuickAmount(25000)"
+              class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 text-[11px] font-semibold text-slate-600 dark:text-slate-300 transition">25rb</button>
+            <button type="button" onclick="setQuickAmount(50000)"
+              class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 text-[11px] font-semibold text-slate-600 dark:text-slate-300 transition">50rb</button>
+            <button type="button" onclick="setQuickAmount(100000)"
+              class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 text-[11px] font-semibold text-slate-600 dark:text-slate-300 transition">100rb</button>
+            <button type="button" onclick="setQuickAmount(250000)"
+              class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 text-[11px] font-semibold text-slate-600 dark:text-slate-300 transition">250rb</button>
+            <button type="button" onclick="setQuickAmount(500000)"
+              class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 text-[11px] font-semibold text-slate-600 dark:text-slate-300 transition">500rb</button>
+          </div>
+        </div>
+
+        <!-- Tanggal & Kategori / Tujuan Transfer -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Tanggal Transaksi</label>
+            <input type="date" id="tx-date" required
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+
+          <div id="tx-category-wrapper">
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Kategori</label>
+            <select id="tx-category"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <!-- Diisi oleh JS -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Dompet Sumber & Dompet Tujuan (Khusus Transfer) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label id="label-tx-wallet" class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Dompet
+              / Rekening</label>
+            <select id="tx-wallet" required
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <!-- Diisi oleh JS -->
+            </select>
+          </div>
+
+          <div id="tx-transfer-target-wrapper" class="hidden">
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Ke Dompet Tujuan</label>
+            <select id="tx-to-wallet"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <!-- Diisi oleh JS -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Biaya Admin Transfer (Hanya tampil saat TRANSFER) -->
+        <div id="tx-admin-fee-wrapper" class="hidden">
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Biaya Admin Transfer
+            (Opsional - Rp)</label>
+          <input type="number" id="tx-admin-fee" min="0" step="1" value="0" placeholder="0"
+            class="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-xs font-semibold tabular-nums text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          <p class="text-[11px] text-slate-400 mt-1">Nominal pokok transfer tidak dihitung sebagai pengeluaran; hanya
+            biaya admin (jika diisi) yang tercatat sebagai pengeluaran.</p>
+        </div>
+
+        <!-- Catatan / Deskripsi -->
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Catatan / Deskripsi</label>
+          <input type="text" id="tx-note" required
+            placeholder="Contoh: Makan siang nasi padang, Gaji bulanan, Top up GoPay..."
+            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        </div>
+
+        <!-- Submit Footer -->
+        <div class="pt-2 flex items-center justify-end gap-2">
+          <button type="button" onclick="closeTransactionModal()"
+            class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+            Batal
+          </button>
+          <button type="submit"
+            class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm shadow-indigo-500/20 transition">
+            Simpan Transaksi
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 2: TAMBAH / EDIT DOMPET ================= -->
+  <div id="modal-wallet"
+    class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center bg-slate-950/60 backdrop-blur-xs p-0 sm:p-4">
+    <div
+      class="w-full sm:max-w-md bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xl overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <h3 id="modal-wallet-title" class="text-base font-bold text-slate-900 dark:text-white">Tambah Dompet / Rekening
+        </h3>
+        <button onclick="closeWalletModal()"
+          class="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form onsubmit="handleSaveWallet(event)" class="p-5 space-y-4">
+        <input type="hidden" id="wallet-id" value="" />
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Nama Dompet / Bank /
+            E-Wallet</label>
+          <input type="text" id="wallet-name" required placeholder="Contoh: BCA Tahapan, SeaBank, OVO, Dompet Tunai"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Jenis Akun</label>
+            <select id="wallet-type"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold">
+              <option value="Rekening Bank">Rekening Bank</option>
+              <option value="E-Wallet">E-Wallet</option>
+              <option value="Uang Tunai">Uang Tunai</option>
+              <option value="Rekening Investasi">Rekening Investasi</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Warna Identitas</label>
+            <select id="wallet-color"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold">
+              <option value="#4f46e5">Indigo (Biru Tua)</option>
+              <option value="#0284c7">Sky (Biru Muda)</option>
+              <option value="#10b981">Emerald (Hijau)</option>
+              <option value="#f59e0b">Amber (Kuning Emas)</option>
+              <option value="#f43f5e">Rose (Merah Muda)</option>
+              <option value="#8b5cf6">Violet (Ungu)</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Saldo Awal (Rp)</label>
+          <input type="number" id="wallet-initial" required step="1" value="0"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-extrabold tabular-nums text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          <p class="text-[11px] text-slate-400 mt-1">Saldo saat ini akan dihitung dari Saldo Awal ditambah/dikurangi
+            seluruh transaksi pada dompet ini.</p>
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeWalletModal()"
+            class="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold">Batal</button>
+          <button type="submit"
+            class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">Simpan
+            Dompet</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 3: EDIT ANGGARAN KATEGORI ================= -->
+  <div id="modal-budget"
+    class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center bg-slate-950/60 backdrop-blur-xs p-0 sm:p-4">
+    <div
+      class="w-full sm:max-w-sm bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xl overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <h3 id="modal-budget-title" class="text-base font-bold text-slate-900 dark:text-white">Atur Anggaran Bulanan
+        </h3>
+        <button onclick="closeBudgetModal()" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form onsubmit="handleSaveBudget(event)" class="p-5 space-y-4">
+        <input type="hidden" id="budget-category-id" value="" />
+        <div>
+          <label id="budget-category-name"
+            class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Batas Anggaran per Bulan
+            (Rp)</label>
+          <input type="number" id="budget-limit-input" required min="0" step="1000"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-base font-extrabold tabular-nums text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeBudgetModal()"
+            class="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold">Batal</button>
+          <button type="submit"
+            class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">Simpan
+            Anggaran</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 4: TARGET TABUNGAN (GOALS) ================= -->
+  <div id="modal-goal"
+    class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center bg-slate-950/60 backdrop-blur-xs p-0 sm:p-4">
+    <div
+      class="w-full sm:max-w-md bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xl overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">Target Tabungan Baru</h3>
+        <button onclick="closeGoalModal()" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form onsubmit="handleSaveGoal(event)" class="p-5 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Nama Target</label>
+          <input type="text" id="goal-name" required placeholder="Contoh: Dana Darurat, Liburan Bali, MacBook Pro"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Target Nominal (Rp)</label>
+            <input type="number" id="goal-target" required min="10000" step="1000" placeholder="10000000"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold tabular-nums" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Dana Terkumpul Saat
+              Ini</label>
+            <input type="number" id="goal-current" required min="0" step="1000" value="0"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold tabular-nums" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Target Tanggal
+            Tercapai</label>
+          <input type="date" id="goal-deadline" required
+            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold" />
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeGoalModal()"
+            class="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold">Batal</button>
+          <button type="submit"
+            class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">Simpan
+            Target</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 5: CATATAN UTANG / PIUTANG ================= -->
+  <div id="modal-debt"
+    class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center bg-slate-950/60 backdrop-blur-xs p-0 sm:p-4">
+    <div
+      class="w-full sm:max-w-md bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xl overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">Catat Utang / Piutang</h3>
+        <button onclick="closeDebtModal()" class="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form onsubmit="handleSaveDebt(event)" class="p-5 space-y-4">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Jenis Catatan</label>
+            <select id="debt-type"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold">
+              <option value="PIUTANG">Piutang (Orang Pinjam Kita)</option>
+              <option value="UTANG">Utang / Cicilan (Kita Pinjam)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Nominal (Rp)</label>
+            <input type="number" id="debt-amount" required min="1000" step="500" placeholder="150000"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold tabular-nums" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Nama Pihak /
+            Keterangan</label>
+          <input type="text" id="debt-person" required
+            placeholder="Contoh: Budi - Split Bill Kopi, Cicilan Laptop Bulan ke-3"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">Jatuh Tempo</label>
+          <input type="date" id="debt-due" required
+            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold" />
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeDebtModal()"
+            class="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold">Batal</button>
+          <button type="submit"
+            class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">Simpan
+            Catatan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= CUSTOM CONFIRMATION DIALOG (TANPA confirm() NATIVE) ================= -->
+  <div id="modal-confirm"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
+    <div
+      class="w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-2xl space-y-4">
+      <div class="flex items-start gap-3">
+        <div
+          class="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+          <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h4 id="confirm-title" class="text-sm font-bold text-slate-900 dark:text-white">Konfirmasi Tindakan</h4>
+          <p id="confirm-message" class="text-xs text-slate-500 dark:text-slate-400 mt-1">Apakah Anda yakin ingin
+            melanjutkan?</p>
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeConfirmModal()"
+          class="px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300">Batal</button>
+        <button id="confirm-ok-btn"
+          class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold">Ya, Lanjutkan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TOAST NOTIFICATION CONTAINER ================= -->
+  <div id="toast-container" class="fixed top-4 right-4 z-[200] space-y-2 pointer-events-none"></div>
+
+  <!-- ================= JAVASCRIPT ENGINE (ES6+) ================= -->
+
+  <!-- FinTrack Pro Modular JavaScript Application Engine -->
+  <script type="module" src="./js/app.js"></script>
+</body>
+
+</html>
